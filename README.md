@@ -88,4 +88,14 @@ This code is for preprocessing CDRs according to Arman's request.
     -   "('Cost (PHP)', 'transfer')"
     
 ### Section F: Promo Info
-- Indicates if promo is active for a particular subscriber during the date specified
+* Indicates if promo is active for a particular subscriber during the date specified
+    - 1, if subscriber has valid subscriber during the specified date
+    - 0, otherwise
+* Column names:
+    - 'FL': Freeload promo
+    - 'GL': Local discount promo
+    - 'GLD': Long distance discount promo
+    
+    
+## Notes
+* Blank values in final csv correspond to Nan
