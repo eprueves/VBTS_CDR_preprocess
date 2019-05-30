@@ -46,23 +46,14 @@ def open_promo_status(fname):
     # Open promo status file
     promostatus = pd.read_csv('Promo_status_tracking_MASTER_201905.csv')
 
+    # convert dates to datetime object
     promostatus['Promo1 Start'] = pd.to_datetime(promostatus['Promo1 Start'], format='%m+AC0-%d+AC0-%y')
     promostatus['Promo2 Start'] = pd.to_datetime(promostatus['Promo2 Start'], format='%m+AC0-%d+AC0-%y')
     promostatus['Freeload transfered on'] = pd.to_datetime(promostatus['Freeload transfered on'],
                                                            format='%m+AC0-%d+AC0-%y')
+
     promostatus['has GL'] = promostatus['Promo1 (GL/GLD)'] == 'GL'
     promostatus['has GLD'] = promostatus['Promo1 (GL/GLD)'] == 'GLD'
-
-    # promostatus['Promo1 Start diff'] = today - promostatus['Promo1 Start']
-    # # promostatus['Freeload transfered on diff'] = today - promostatus['Freeload transfered on']
-    #
-    # promostatus['GL active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GL'])
-    # promostatus['GLD active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GLD'])
-    # promostatus['FL sent'] = promostatus['Freeload transfered on'] == today
-
-    # # get all rows where imsi is present  #
-    # imsi = 515026000009073
-    # present = promostatus[promostatus['IMSI'] == imsi]
 
     return promostatus
 
@@ -70,11 +61,10 @@ def open_promo_status(fname):
 def check_status_today(promostatus, today):
 
     promostatus['Promo1 Start diff'] = today - promostatus['Promo1 Start']
-    # promostatus['Freeload transfered on diff'] = today - promostatus['Freeload transfered on']
-
     promostatus['GL active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GL'])
     promostatus['GLD active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GLD'])
     promostatus['FL sent'] = promostatus['Freeload transfered on'] == today
+
     return promostatus[['IMSI', 'GLD active', 'GL active', 'FL sent']].groupby('IMSI').any()
 
 
