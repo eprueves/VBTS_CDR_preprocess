@@ -89,12 +89,12 @@ This code is for preprocessing CDRs according to Arman's request.
     
 ### Section F: Promo Info
 * Indicates if promo is active for a particular subscriber during the date specified
-    - 1, if subscriber has valid subscriber during the specified date
-    - 0, otherwise
+    - True, if subscriber has valid subscriber during the specified date
+    - False, otherwise
 * Column names:
-    - 'FL': Freeload promo
-    - 'GL': Local discount promo
-    - 'GLD': Long distance discount promo
+    - 'GLD Active': if subscriber has active long distance discount
+    - 'GL Active': if subscribe has active local discount
+    - 'FL Sent': if subscriber received freeload on date
     
     
 ## Notes

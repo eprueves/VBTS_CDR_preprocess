@@ -1,5 +1,6 @@
 import ccnvars
 import pandas as pd
+from _datetime import datetime, timedelta
 
 
 def sort_event_type(row):
@@ -39,7 +40,43 @@ def sort_event_type(row):
         return "%s_%s" % (event_type, 'globe')
     else:
         return "%s_%s" % (event_type, 'others')
-        
+
+
+def open_promo_status(fname):
+    # Open promo status file
+    promostatus = pd.read_csv('Promo_status_tracking_MASTER_201905.csv')
+
+    promostatus['Promo1 Start'] = pd.to_datetime(promostatus['Promo1 Start'], format='%m+AC0-%d+AC0-%y')
+    promostatus['Promo2 Start'] = pd.to_datetime(promostatus['Promo2 Start'], format='%m+AC0-%d+AC0-%y')
+    promostatus['Freeload transfered on'] = pd.to_datetime(promostatus['Freeload transfered on'],
+                                                           format='%m+AC0-%d+AC0-%y')
+    promostatus['has GL'] = promostatus['Promo1 (GL/GLD)'] == 'GL'
+    promostatus['has GLD'] = promostatus['Promo1 (GL/GLD)'] == 'GLD'
+
+    # promostatus['Promo1 Start diff'] = today - promostatus['Promo1 Start']
+    # # promostatus['Freeload transfered on diff'] = today - promostatus['Freeload transfered on']
+    #
+    # promostatus['GL active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GL'])
+    # promostatus['GLD active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GLD'])
+    # promostatus['FL sent'] = promostatus['Freeload transfered on'] == today
+
+    # # get all rows where imsi is present  #
+    # imsi = 515026000009073
+    # present = promostatus[promostatus['IMSI'] == imsi]
+
+    return promostatus
+
+
+def check_status_today(promostatus, today):
+
+    promostatus['Promo1 Start diff'] = today - promostatus['Promo1 Start']
+    # promostatus['Freeload transfered on diff'] = today - promostatus['Freeload transfered on']
+
+    promostatus['GL active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GL'])
+    promostatus['GLD active'] = (promostatus['Promo1 Start diff'] <= timedelta(days=30)) & (promostatus['has GLD'])
+    promostatus['FL sent'] = promostatus['Freeload transfered on'] == today
+    return promostatus[['IMSI', 'GLD active', 'GL active', 'FL sent']].groupby('IMSI').any()
+
 
 def munge(fname):
     df = pd.read_csv(fname)
@@ -74,3 +111,11 @@ def munge(fname):
     sums = sums.drop(for_dropping, axis=1)
 
     return pd.concat([counts, sums], axis=1)
+
+
+def fname_to_datetime(fname):
+    year = fname[6:10]
+    mon = fname[11:13]
+    day = fname[14:16]
+    today = '%s-%s-%s' % (mon, day, year[2:4])
+    return datetime.strptime(today, "%m-%d-%y")

@@ -66,4 +66,3 @@ EVENTS = ["local_call", "local_sms", "outside_call", "outside_sms",
 EXTERNAL_CALL_EVENTS = ['incoming_call', 'outside_call', 'globe_call']
 
 EXTERNAL_SMS_EVENTS = ['incoming_sms', 'outside_sms', 'globe_sms']
-

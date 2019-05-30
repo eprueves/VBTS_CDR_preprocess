@@ -12,14 +12,22 @@ except IndexError:
     quit()
 
 
-# Open CCN subscriber list
+# Open CCN subscriber master list
 cols = ['hhuid_key', 'uuid_key', 'memberid', 'IMSI', 'MSISDN', 'vbts_site_str']
 subs = pd.read_csv('ccn_customerlist.csv')[cols]
+
+# Open promo status master list
+promostatus = ccnutil.open_promo_status(fname)
+
+# Get datetime today and compare promo status vs today's date
+today = ccnutil.fname_to_datetime(fname)
+promostatus_today = ccnutil.check_status_today(promostatus, today)
 
 # Munge CDR data
 summary = ccnutil.munge(fname)
 
-# Left join merge 'summary' df to 'subs' df
+# Left join merge 'summary' df, 'promostatus_today' df to 'subs' df
 final = subs.merge(summary, how='left', left_on='IMSI', right_on='Subscriber IMSI')
-final.insert(loc=6, column='Date', value=fname[6:16])
-final.to_csv('final.csv', sep=',')
+final.insert(loc=6, column='Date', value=today)
+final = final.merge(promostatus_today, how='left', left_on='IMSI', right_on='IMSI')
+final.to_csv('final2.csv', sep=',')
