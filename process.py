@@ -9,6 +9,7 @@ try:
 except IndexError:
     print("Missing args!!!")
     print("Usage: python3 ./process.py  {filename}")
+    print("Program assumes that the filename is in the following format: etage-YYYY-MM-DD.csv")
     quit()
 
 
