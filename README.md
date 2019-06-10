@@ -43,8 +43,11 @@ This code is for preprocessing CDRs according to Arman's request.
 ### Section D. Call Duration:
 * Column name is in a form of a tuple ('%duration_type', '%event_type')
 * Valid only for call-type transactions
-    - Total Call Duration (sec): value for the total length of a particular call type, in seconds
-    - Average Call Duration (sec): value for the average length of a particular call type, in seconds
+    - Total Call Duration (sec): value for the total length of a particular call type.
+    This duration includes connect (i.e.the ringing tone), which should not be billable. 
+    - Average Call Duration (sec): value for the average length of a particular call type, in seconds.
+    This is acquired by dividing the 'Total Call Duration' with its respective count (see Section B)
+    - Billable Call Duration (sec): The amount of billable seconds in a call. 
 * Column names:
     -   "('Total Call Duration (sec)', 'error_call')"
     -   "('Total Call Duration (sec)', 'free_call')"
@@ -62,12 +65,23 @@ This code is for preprocessing CDRs according to Arman's request.
     -   "('Average Call Duration (sec)', 'local_recv_call')"
     -   "('Average Call Duration (sec)', 'outside_call_globe')"
     -   "('Average Call Duration (sec)', 'outside_call_others')"
+    -   "('Billable Call Duration (sec)', 'error_call')"
+    -   "('Billable Call Duration (sec)', 'free_call')"
+    -   "('Billable Call Duration (sec)', 'incoming_call_globe')"
+    -   "('Billable Call Duration (sec)', 'incoming_call_others')"
+    -   "('Billable Call Duration (sec)', 'local_call')"
+    -   "('Billable Call Duration (sec)', 'local_recv_call')"
+    -   "('Billable Call Duration (sec)', 'outside_call_globe')"
+    -   "('Billable Call Duration (sec)', 'outside_call_others')"
         
 ### Section E: Cost
 * Column name is in a form of a Tuple ('Cost (PHP)', '%event_type')
 * The value refers to e-load spent/gained by a subscriber for a particular event_type
     - negative, if credits were spent by subscriber
     - positive, if credits were gained by subscriber (i.e. from load transfer)
+* The cost value is acquired as follows:
+    - calls: billable call duration x tariff
+    - SMS: sms count x tariff
 * Column names:
     -   "('Cost (PHP)', 'error_call')"
     -   "('Cost (PHP)', 'error_sms')",

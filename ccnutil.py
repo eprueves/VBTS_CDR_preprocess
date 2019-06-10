@@ -83,7 +83,7 @@ def munge(fname):
     # Get event_type counts and per event_type usage
     # Also do some cleaning
     counts = df.groupby(['Subscriber IMSI', 'Type of Event']).size()
-    cols = ['Total Call Duration (sec)', 'Cost (PHP)']
+    cols = ['Total Call Duration (sec)', 'Billable Call Duration (sec)', 'Cost (PHP)']
     sums = df.groupby(['Subscriber IMSI', 'Type of Event'])[cols].aggregate(sum)
     sums.insert(loc=1, column='Average Call Duration (sec)', value=sums['Total Call Duration (sec)'] / counts)
 
